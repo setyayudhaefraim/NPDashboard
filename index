@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard New Product Development</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#f6f5fb;--card:#fff;--ink:#1b1b33;--mute:#77778f;--line:#e4e1f3;--pri:#7c3aed;--pri-soft:#ede9fe;--ok:#16a34a;--warn:#d97706;--bad:#dc2626}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif;padding:20px}
+.wrap{max-width:1180px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 26px}
+.top{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start}
+.code{color:var(--mute);font-size:14px}
+h1{margin:4px 0 10px;font-size:34px;font-weight:800;letter-spacing:-.5px}
+.meta{display:flex;gap:22px;flex-wrap:wrap;color:var(--mute);font-size:14px}
+.meta b{color:var(--ink);font-weight:600}
+.bar{height:12px;border-radius:99px;background:var(--pri-soft);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--pri);border-radius:99px;transition:width .3s}
+.big{display:flex;align-items:center;gap:16px;margin-top:20px}
+.big .bar{flex:1}.big strong{font-size:22px;font-weight:700}
+.tabs{display:flex;gap:10px;margin:16px 0;overflow-x:auto;padding-bottom:6px}
+.tab{flex:1 0 190px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;font:inherit;color:inherit}
+.tab .r{display:flex;justify-content:space-between;font-weight:600;margin-bottom:10px}
+.tab .r span{color:var(--mute)}
+.tab small{display:block;color:var(--mute);margin-top:8px;font-size:12px}
+.tab.on{border:2px solid var(--pri);padding:13px 15px}
+.bar.s{height:8px}
+button,select,input{font:inherit;color:inherit}
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;font-weight:600;cursor:pointer}
+.btn:hover{border-color:var(--pri)}
+.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+.btn.del{color:var(--bad)}
+:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.bar-actions{display:flex;justify-content:space-between;align-items:center;margin:6px 0 14px;gap:10px;flex-wrap:wrap}
+.bar-actions h2{margin:0;font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+.part{padding:18px 20px}
+.part h3{margin:0 0 4px;font-size:17px}
+.part .sub{color:var(--mute);font-size:13px;margin-bottom:12px}
+.sel{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.sel select{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#fff;font-size:13px}
+.st{display:grid;grid-template-columns:130px 1fr 42px;gap:10px;align-items:center;font-size:13px;margin:7px 0}
+.st output{text-align:right;color:var(--mute);font-weight:600}
+input[type=range]{width:100%;accent-color:var(--pri)}
+.tot{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.tot .bar{flex:1}.tot b{font-size:18px}
+.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--pri-soft);color:var(--pri)}
+.row-b{display:flex;gap:8px;margin-top:12px}
+.empty{padding:36px;text-align:center;color:var(--mute)}
+dialog{border:none;border-radius:16px;padding:24px;width:min(440px,92vw);box-shadow:0 20px 60px rgba(40,20,90,.25)}
+dialog::backdrop{background:rgba(27,27,51,.4)}
+dialog h3{margin:0 0 14px}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+dialog input,dialog select{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:#fff}
+.foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}
+.note{color:var(--mute);font-size:12px;margin-top:18px;text-align:center}
+@media(max-width:520px){.st{grid-template-columns:100px 1fr 40px}h1{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="card">
+    <div class="top">
+      <div>
+        <div class="code">NPD-2026</div>
+        <h1>NEW PRODUCT DEVELOPMENT</h1>
+        <div class="meta">
+          <span>Department <b>R&amp;D</b></span>
+          <span>Pilar <b>New Product Development</b></span>
+          <span>Total part <b id="cnt">0</b></span>
+        </div>
+      </div>
+      <div class="row-b" style="margin:0">
+        <button class="btn" id="exp">Ekspor</button>
+        <button class="btn" id="imp">Impor</button>
+        <input type="file" id="file" accept=".json" hidden>
+      </div>
+    </div>
+    <div class="big"><div class="bar"><i id="allbar"></i></div><strong id="allpct">0%</strong></div>
+  </header>
+
+  <nav class="tabs" id="tabs" aria-label="Kategori"></nav>
+
+  <div class="bar-actions">
+    <h2 id="catTitle"></h2>
+    <button class="btn pri" id="add">Tambah part</button>
+  </div>
+  <div class="grid" id="grid"></div>
+  <p class="note">Data tersimpan di browser ini. Gunakan Ekspor untuk cadangan atau memindahkan data ke perangkat lain.</p>
+</div>
+
+<dialog id="dlg">
+  <form method="dialog" id="frm">
+    <h3 id="dtitle">Tambah part</h3>
+    <label for="fname">Nama part</label>
+    <input id="fname" required placeholder="Contoh: Gasket racing Supra GTR">
+    <label for="fpic">PIC</label>
+    <input id="fpic" placeholder="Nama penanggung jawab">
+    <label for="fcat">Kategori</label>
+    <select id="fcat"></select>
+    <label for="fprio">Prioritas</label>
+    <select id="fprio"><option>Rendah</option><option>Sedang</option><option>Tinggi</option></select>
+    <div class="foot">
+      <button class="btn" type="button" id="cancel">Batal</button>
+      <button class="btn pri" type="submit">Simpan</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+const STAGES = ["Studi","Technical Design","Purchasing","Pengerjaan Teknis","Trial"];
+const CATS = [
+  {id:"racing",name:"Racing"},
+  {id:"r2",name:"Harian R2"},
+  {id:"r4",name:"Harian R4"},
+  {id:"statis",name:"Mesin Statis"}
+];
+const STATUS = ["Belum mulai","Berjalan","Selesai","Tertunda"];
+const KEY = "npd-dashboard-v1";
+
+const SAMPLE = [
+  {id:1,cat:"racing",name:"Gasket racing Supra GTR",pic:"",status:"Berjalan",prio:"Tinggi",stages:[100,80,60,20,0]},
+  {id:2,cat:"racing",name:"Piston forged 5TP",pic:"",status:"Berjalan",prio:"Tinggi",stages:[100,100,100,70,0]},
+  {id:3,cat:"r2",name:"Contoh part harian R2",pic:"",status:"Belum mulai",prio:"Sedang",stages:[30,0,0,0,0]},
+  {id:4,cat:"r4",name:"Contoh part harian R4",pic:"",status:"Belum mulai",prio:"Sedang",stages:[0,0,0,0,0]},
+  {id:5,cat:"statis",name:"Contoh part mesin statis",pic:"",status:"Belum mulai",prio:"Rendah",stages:[0,0,0,0,0]}
+];
+
+function load(){
+  try{const s=localStorage.getItem(KEY);if(s)return JSON.parse(s)}catch(e){}
+  return JSON.parse(JSON.stringify(SAMPLE));
+}
+let parts = load();
+let cat = CATS[0].id;
+let editId = null;
+
+function save(){try{localStorage.setItem(KEY,JSON.stringify(parts))}catch(e){}}
+const avg = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+const pPct = p => avg(p.stages);
+const fmt = n => (Math.round(n*10)/10).toString().replace(".",",") + "%";
+const esc = s => String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $ = id => document.getElementById(id);
+
+function render(){
+  $("cnt").textContent = parts.length;
+  const all = avg(parts.map(pPct));
+  $("allbar").style.width = all+"%";
+  $("allpct").textContent = fmt(all);
+
+  $("tabs").innerHTML = CATS.map(c=>{
+    const ps = parts.filter(p=>p.cat===c.id);
+    const v = avg(ps.map(pPct));
+    return `<button class="tab ${c.id===cat?"on":""}" data-cat="${c.id}">
+      <div class="r">${c.name}<span>${fmt(v)}</span></div>
+      <div class="bar s"><i style="width:${v}%"></i></div>
+      <small>${ps.length} part</small></button>`;
+  }).join("");
+
+  const cur = CATS.find(c=>c.id===cat);
+  $("catTitle").textContent = "Part " + cur.name;
+  const list = parts.filter(p=>p.cat===cat);
+  $("grid").innerHTML = list.length ? list.map(partHTML).join("")
+    : `<div class="card empty" style="grid-column:1/-1">Belum ada part di kategori ini. Klik Tambah part untuk memulai.</div>`;
+}
+
+function partHTML(p){
+  const v = pPct(p);
+  return `<article class="card part" data-id="${p.id}">
+    <h3>${esc(p.name)}</h3>
+    <div class="sub">${p.pic ? "PIC "+esc(p.pic) : "PIC belum diisi"}</div>
+    <div class="sel">
+      <select data-f="status" aria-label="Status">${STATUS.map(s=>`<option ${s===p.status?"selected":""}>${s}</option>`).join("")}</select>
+      <select data-f="prio" aria-label="Prioritas">${["Rendah","Sedang","Tinggi"].map(s=>`<option ${s===p.prio?"selected":""}>${s}</option>`).join("")}</select>
+    </div>
+    ${STAGES.map((s,i)=>`<div class="st"><span>${s}</span>
+      <input type="range" min="0" max="100" step="5" value="${p.stages[i]}" data-i="${i}" aria-label="${s}">
+      <output>${p.stages[i]}%</output></div>`).join("")}
+    <div class="tot"><div class="bar"><i style="width:${v}%"></i></div><b>${fmt(v)}</b></div>
+    <div class="row-b">
+      <button class="btn" data-act="edit">Edit</button>
+      <button class="btn del" data-act="del">Hapus</button>
+    </div>
+  </article>`;
+}
+
+// tab
+$("tabs").addEventListener("click",e=>{
+  const b=e.target.closest(".tab"); if(!b) return;
+  cat=b.dataset.cat; render();
+});
+
+// slider: update label saat digeser, render ulang saat dilepas
+$("grid").addEventListener("input",e=>{
+  if(e.target.type!=="range") return;
+  const p=parts.find(x=>x.id==e.target.closest(".part").dataset.id);
+  p.stages[e.target.dataset.i]=+e.target.value;
+  e.target.nextElementSibling.textContent=e.target.value+"%";
+});
+$("grid").addEventListener("change",e=>{
+  const art=e.target.closest(".part"); if(!art) return;
+  const p=parts.find(x=>x.id==art.dataset.id);
+  if(e.target.dataset.f) p[e.target.dataset.f]=e.target.value;
+  save(); render();
+});
+$("grid").addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]"); if(!b) return;
+  const id=+b.closest(".part").dataset.id;
+  if(b.dataset.act==="del"){
+    const p=parts.find(x=>x.id===id);
+    if(confirm(`Hapus part "${p.name}"?`)){parts=parts.filter(x=>x.id!==id);save();render();}
+  } else openDlg(id);
+});
+
+// dialog
+$("fcat").innerHTML = CATS.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
+function openDlg(id){
+  editId=id||null;
+  const p=id?parts.find(x=>x.id===id):null;
+  $("dtitle").textContent = p?"Edit part":"Tambah part";
+  $("fname").value=p?p.name:"";
+  $("fpic").value=p?p.pic:"";
+  $("fcat").value=p?p.cat:cat;
+  $("fprio").value=p?p.prio:"Sedang";
+  $("dlg").showModal();
+}
+$("add").onclick=()=>openDlg();
+$("cancel").onclick=()=>$("dlg").close();
+$("frm").addEventListener("submit",()=>{
+  const d={name:$("fname").value.trim(),pic:$("fpic").value.trim(),cat:$("fcat").value,prio:$("fprio").value};
+  if(!d.name) return;
+  if(editId){Object.assign(parts.find(x=>x.id===editId),d);}
+  else parts.push({id:Date.now(),status:"Belum mulai",stages:[0,0,0,0,0],...d});
+  cat=d.cat; save(); render();
+});
+
+// ekspor / impor
+$("exp").onclick=()=>{
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(parts,null,2)],{type:"application/json"}));
+  a.download="npd-dashboard.json"; a.click(); URL.revokeObjectURL(a.href);
+};
+$("imp").onclick=()=>$("file").click();
+$("file").onchange=e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      if(!Array.isArray(d)) throw 0;
+      parts=d; save(); render();
+    }catch(_){alert("File tidak valid. Gunakan file hasil Ekspor.");}
+  };
+  r.readAsText(f); e.target.value="";
+};
+
+render();
+</script>
+</body>
+</html>
