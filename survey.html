@@ -95,14 +95,14 @@ const fd=s=>s?new Date(s+"T00:00").toLocaleDateString("id-ID",{day:"numeric",mon
 const nowT=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
 const pct=(a,b)=>b?Math.min(100,a/b*100):0;
 const bar=v=>`<div class="bar"><i style="width:${v}%"></i></div>`;
-const top=(arr,n)=>{const m={};arr.filter(x=>x&&String(x).trim()).forEach(x=>{const k=String(x).trim().toLowerCase();(m[k]=m[k]||{n:0,t:String(x).trim()}).n++});return Object.values(m).sort((a,b)=>b.n-a.n).slice(0,n).map(o=>`${esc(o.t)} (${o.n})`).join(", ")||"-"};
+const topn=(arr,n)=>{const m={};arr.filter(x=>x&&String(x).trim()).forEach(x=>{const k=String(x).trim().toLowerCase();(m[k]=m[k]||{n:0,t:String(x).trim()}).n++});return Object.values(m).sort((a,b)=>b.n-a.n).slice(0,n).map(o=>`${esc(o.t)} (${o.n})`).join(", ")||"-"};
 const L=()=>V.filter(v=>wil==="Semua"||v.wilayah===wil).sort((a,b)=>(a.tgl||"").localeCompare(b.tgl||"")||a.id-b.id);
 
 function stat(p,list){
  const o=[],m=[];list.forEach(v=>v.items.forEach(i=>{if(i.p===p)(v.tipe==="outlet"?o:m).push(i)}));
  const h=o.map(i=>+i.harga).filter(x=>x>0);
- return{no:o.length,nm:m.length,brand:top(o.map(i=>i.brand),2),hmin:h.length?Math.min(...h):0,hmax:h.length?Math.max(...h):0,havg:h.length?h.reduce((a,b)=>a+b)/h.length:0,
-  dem:o.reduce((s,i)=>s+(+i.ambil||0),0),usp:top(o.map(i=>i.usp),2),fungsi:top(m.map(i=>i.fungsi),2),eks:top(m.map(i=>i.ekspektasi),2),band:top(m.map(i=>i.pembanding),2)};
+ return{no:o.length,nm:m.length,brand:topn(o.map(i=>i.brand),2),hmin:h.length?Math.min(...h):0,hmax:h.length?Math.max(...h):0,havg:h.length?h.reduce((a,b)=>a+b)/h.length:0,
+  dem:o.reduce((s,i)=>s+(+i.ambil||0),0),usp:topn(o.map(i=>i.usp),2),fungsi:topn(m.map(i=>i.fungsi),2),eks:topn(m.map(i=>i.ekspektasi),2),band:topn(m.map(i=>i.pembanding),2)};
 }
 
 function render(){
