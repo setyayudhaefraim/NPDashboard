@@ -73,6 +73,7 @@ h2{font-size:18px;margin:18px 0 8px}
   <label class="fl">Jenis<select id="vt"><option value="outlet">Outlet / speedshop</option><option value="mekanik">Mekanik / engine builder</option></select></label>
   <label class="fl">Nama outlet / mekanik<input id="vn" required></label>
   <label class="fl">Wilayah<select id="vw"></select></label>
+  <label class="fl" id="vkl" style="display:none">Nama kota / area<input id="vk" placeholder="Contoh: Malang"></label>
   <label class="fl">Tanggal kunjungan<input type="date" id="vd" required></label>
   <div class="foot"><button class="btn" type="button" data-a="vcancel">Batal</button><button class="btn pri" type="submit">Simpan</button></div>
 </form></dialog>
@@ -84,7 +85,8 @@ h2{font-size:18px;margin:18px 0 8px}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const PROD=["Lambda","Brake Pad","Gasket","Kampas Kopling","Piston","Conrod","Roller Matic","Brake Disc","TPS Sensor","Sprocket","Komstir"];
-const WIL=["Surabaya","Sidoarjo","Gresik","Mojokerto"];
+const WIL=["Surabaya","Sidoarjo","Gresik","Mojokerto"],ALL=[...WIL,"Lainnya"];
+const wr=v=>v.wilayah==="Lainnya"&&v.kota?"Lainnya: "+v.kota:v.wilayah,wl=v=>esc(wr(v));
 const START=new Date("2026-11-12T00:00:00"),END=new Date("2026-12-12T23:59:59");
 const KEY="survey-v1";
 let V=[];try{V=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){}
@@ -109,10 +111,10 @@ function render(){
  const done=V.filter(v=>v.status==="Selesai"),dO=done.filter(v=>v.tipe==="outlet").length,dM=done.length-dO;
  const T=new Date(),fr=Math.min(1,Math.max(0,(T-START)/(END-START))),exp=Math.round(45*fr),diff=done.length-exp;
  const pace=T<START?["n","Survei dimulai 12 Nov 2026 dan berakhir 12 Des 2026"]:diff>=0?["ok",`Di depan atau sesuai ritme target (target hari ini ${exp} kunjungan, realisasi ${done.length})`]:["bad",`Tertinggal ${-diff} kunjungan dari ritme target (target hari ini ${exp}, realisasi ${done.length})`];
- const tabs=["Semua",...WIL].map(w=>{const ls=V.filter(v=>w==="Semua"||v.wilayah===w),d=ls.filter(v=>v.status==="Selesai").length;
+ const tabs=["Semua",...ALL].map(w=>{const ls=V.filter(v=>w==="Semua"||v.wilayah===w),d=ls.filter(v=>v.status==="Selesai").length;
   return `<button class="tab ${w===wil?"on":""}" data-w="${w}"><div class="r">${w}<span>${d}/${ls.length}</span></div>${bar(pct(d,ls.length))}<small>selesai / terjadwal</small></button>`}).join("");
  $("app").innerHTML=`<header class="card"><div class="top"><div><div class="code">ST No. 087/ST/XI/2026</div><h1>SURVEI PRODUK R&amp;D</h1>
- <div class="meta"><span>PIC <b>SPV RND</b></span><span>Periode <b>12 Nov - 12 Des 2026</b></span><span>Wilayah <b>${WIL.join(", ")}</b></span></div></div>
+ <div class="meta"><span>PIC <b>SPV RND</b></span><span>Periode <b>12 Nov - 12 Des 2026</b></span><span>Wilayah <b>${WIL.join(", ")} dan area lainnya</b></span></div></div>
  <div class="row-b noprint" style="margin:0"><button class="btn" data-a="exp">Ekspor</button><button class="btn" data-a="imp">Impor</button><button class="btn" data-a="demo">Data contoh</button></div></div>
  <div class="big">${bar(pct(done.length,45))}<strong>${done.length}/45</strong></div>
  <div class="two"><div><span>Outlet / speedshop <b>${dO}/40</b></span>${bar(pct(dO,40))}</div><div><span>Mekanik / engine builder <b>${dM}/5</b></span>${bar(pct(dM,5))}</div></div>
@@ -126,11 +128,11 @@ function render(){
 function vList(){
  const ls=L();
  const plan=V.filter(v=>v.status==="Rencana").sort((a,b)=>(a.tgl||"").localeCompare(b.tgl||""));
- const body="Rencana kunjungan survei produk R&D (ST 087/ST/XI/2026):\n\n"+plan.map((v,i)=>`${i+1}. ${fd(v.tgl)} - ${v.nama} (${v.tipe==="outlet"?"Outlet":"Mekanik"}, ${v.wilayah})`).join("\n");
+ const body="Rencana kunjungan survei produk R&D (ST 087/ST/XI/2026):\n\n"+plan.map((v,i)=>`${i+1}. ${fd(v.tgl)} - ${v.nama} (${v.tipe==="outlet"?"Outlet":"Mekanik"}, ${wr(v)})`).join("\n");
  const mail=`mailto:mr.fuboru@gmail.com?subject=${encodeURIComponent("Rencana Kunjungan Survei Produk R&D")}&body=${encodeURIComponent(body)}`;
  return `<div class="row-b noprint" style="margin:0 0 12px"><button class="btn pri" data-a="add">Tambah kunjungan</button><a class="btn" href="${mail}">Kirim rencana lewat email (${plan.length})</a></div>
  <div class="grid">${ls.length?ls.map(v=>`<article class="card v" data-id="${v.id}">
-  <div class="vt"><div><b>${esc(v.nama)}</b><div class="sub">${v.tipe==="outlet"?"Outlet / speedshop":"Mekanik / engine builder"} · ${v.wilayah} · ${fd(v.tgl)}</div></div><span class="pill ${v.status}">${v.status}</span></div>
+  <div class="vt"><div><b>${esc(v.nama)}</b><div class="sub">${v.tipe==="outlet"?"Outlet / speedshop":"Mekanik / engine builder"} · ${wl(v)} · ${fd(v.tgl)}</div></div><span class="pill ${v.status}">${v.status}</span></div>
   <div class="row-b"><select data-sf aria-label="Status">${["Rencana","Selesai","Batal"].map(s=>`<option ${s===v.status?"selected":""}>${s}</option>`).join("")}</select>
    <label class="chk"><input type="checkbox" data-cf ${v.sfa?"checked":""}> Sudah input di Fuboru Apps</label></div>
   <div class="row-b"><button class="btn" data-a="ci" ${v.ci?"disabled":""}>${v.ci?"Check-in "+v.ci:"Check-in"}</button><button class="btn" data-a="co" ${v.co?"disabled":""}>${v.co?"Check-out "+v.co:"Check-out"}</button></div>
@@ -159,17 +161,19 @@ function vRep(){
  <h2>Hasil per produk</h2><div class="tw"><table><tr><th>Produk</th><th>Responden</th><th>Kompetitor</th><th>Harga rata-rata</th><th>Permintaan/bln</th><th>USP</th></tr>
  ${PROD.map(p=>{const s=stat(p,ls);return `<tr><td>${p}</td><td>${s.no} outlet, ${s.nm} mekanik</td><td>${s.brand}</td><td>${s.havg?rp(s.havg):"-"}</td><td>${s.dem.toLocaleString("id-ID")}</td><td>${s.usp}</td></tr>`}).join("")}</table></div>
  <h2>Daftar kunjungan</h2><div class="tw"><table><tr><th>Tanggal</th><th>Nama</th><th>Jenis</th><th>Wilayah</th><th>Check-in / out</th><th>Status</th><th>Fuboru Apps</th></tr>
- ${ls.map(v=>`<tr><td>${fd(v.tgl)}</td><td>${esc(v.nama)}</td><td>${v.tipe==="outlet"?"Outlet":"Mekanik"}</td><td>${v.wilayah}</td><td>${v.ci||"-"} / ${v.co||"-"}</td><td>${v.status}</td><td>${v.sfa?"Ya":"Belum"}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`}</table></div></section>`;
+ ${ls.map(v=>`<tr><td>${fd(v.tgl)}</td><td>${esc(v.nama)}</td><td>${v.tipe==="outlet"?"Outlet":"Mekanik"}</td><td>${wl(v)}</td><td>${v.ci||"-"} / ${v.co||"-"}</td><td>${v.status}</td><td>${v.sfa?"Ya":"Belum"}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`}</table></div></section>`;
 }
 
 // ---- dialog kunjungan ----
-$("vw").innerHTML=WIL.map(w=>`<option>${w}</option>`).join("");
+$("vw").innerHTML=ALL.map(w=>`<option>${w}</option>`).join("");
+const tgl=()=>{$("vkl").style.display=$("vw").value==="Lainnya"?"block":"none"};
+$("vw").onchange=tgl;
 function openV(id){editId=id||null;const v=id?V.find(x=>x.id===id):null;
  $("dvt").textContent=v?"Edit kunjungan":"Tambah kunjungan";
  $("vt").value=v?v.tipe:"outlet";$("vn").value=v?v.nama:"";$("vw").value=v?v.wilayah:(wil==="Semua"?WIL[0]:wil);
- $("vd").value=v?v.tgl:new Date().toISOString().slice(0,10);$("dv").showModal()}
+ $("vd").value=v?v.tgl:new Date().toISOString().slice(0,10);$("vk").value=v?(v.kota||""):"";tgl();$("dv").showModal()}
 $("fv").addEventListener("submit",()=>{
- const d={tipe:$("vt").value,nama:$("vn").value.trim(),wilayah:$("vw").value,tgl:$("vd").value};
+ const d={tipe:$("vt").value,nama:$("vn").value.trim(),wilayah:$("vw").value,kota:$("vw").value==="Lainnya"?$("vk").value.trim():"",tgl:$("vd").value};
  if(!d.nama)return;
  if(editId)Object.assign(V.find(x=>x.id===editId),d);else V.push({id:Date.now(),status:"Rencana",ci:"",co:"",sfa:false,items:[],...d});
  save();render()});
@@ -183,7 +187,7 @@ function itemHTML(v,it,i){
  return `<div class="it" data-i="${i}"><div class="fg">${sel}${fields}</div><div class="row-b" style="margin:0 0 8px"><button type="button" class="btn del" data-a="sdel">Hapus produk</button></div></div>`;
 }
 function buildS(){const v=V.find(x=>x.id===cur);
- $("sb").innerHTML=`<h3>Survei: ${esc(v.nama)}</h3><div class="sub">${v.tipe==="outlet"?"Outlet / speedshop":"Mekanik / engine builder"} · ${v.wilayah}. Satu blok untuk tiap produk yang ditanyakan.</div>
+ $("sb").innerHTML=`<h3>Survei: ${esc(v.nama)}</h3><div class="sub">${v.tipe==="outlet"?"Outlet / speedshop":"Mekanik / engine builder"} · ${wl(v)}. Satu blok untuk tiap produk yang ditanyakan.</div>
  ${v.items.map((it,i)=>itemHTML(v,it,i)).join("")||'<div class="empty">Belum ada produk. Klik Tambah produk.</div>'}
  <div class="foot"><button type="button" class="btn" data-a="sadd">Tambah produk</button><button type="button" class="btn pri" data-a="sclose">Selesai</button></div>`}
 $("sb").addEventListener("input",e=>{const t=e.target,k=t.dataset.k;if(!k)return;
