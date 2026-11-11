@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Survei Produk R&amp;D</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#f6f5fb;--card:#fff;--ink:#1b1b33;--mute:#77778f;--line:#e4e1f3;--pri:#7c3aed;--soft:#ede9fe;--ok:#16a34a;--warn:#d97706;--bad:#dc2626}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif;padding:16px}
+.wrap{max-width:1180px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 24px}
+.top{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:flex-start}
+.code{color:var(--mute);font-size:13px}
+h1{margin:4px 0 8px;font-size:30px;font-weight:800;letter-spacing:-.5px}
+.meta{display:flex;gap:18px;flex-wrap:wrap;color:var(--mute);font-size:13px}.meta b{color:var(--ink);font-weight:600}
+.bar{height:10px;border-radius:99px;background:var(--soft);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--pri);border-radius:99px;transition:width .3s}
+.big{display:flex;align-items:center;gap:14px;margin-top:16px}.big .bar{flex:1;height:12px}.big strong{font-size:21px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;font-size:13px}
+.two div>span{display:flex;justify-content:space-between;margin-bottom:5px;color:var(--mute)}.two b{color:var(--ink)}
+.pace{margin-top:12px;font-size:13px;font-weight:600}.pace.ok{color:var(--ok)}.pace.bad{color:var(--bad)}.pace.n{color:var(--mute)}
+.tabs{display:flex;gap:10px;margin:14px 0 8px;overflow-x:auto;padding-bottom:6px}
+.tab{flex:1 0 150px;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;font:inherit;color:inherit}
+.tab .r{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}.tab .r span{color:var(--mute)}
+.tab small{display:block;color:var(--mute);margin-top:6px;font-size:11px}
+.tab.on{border:2px solid var(--pri);padding:11px 13px}
+.tab .bar{height:7px}
+.sw{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+button,select,input,textarea{font:inherit;color:inherit}
+.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;font-size:14px}
+.btn:hover{border-color:var(--pri)}.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}.btn.on{background:var(--soft);border-color:var(--pri);color:var(--pri)}.btn.del{color:var(--bad)}
+:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.v,.p{padding:16px 18px}
+.vt{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.sub{color:var(--mute);font-size:13px;margin-top:2px}
+.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:var(--soft);color:var(--pri);white-space:nowrap}
+.pill.Selesai{background:#dcfce7;color:var(--ok)}.pill.Batal{background:#fee2e2;color:var(--bad)}
+.row-b{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.row-b select{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:#fff;font-size:13px}
+.chk{font-size:13px;display:flex;gap:6px;align-items:center}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:4px 10px;font-size:13px;margin-top:10px}.kv span{color:var(--mute)}
+.p h3{margin:0 0 8px;font-size:17px}
+.empty{padding:34px;text-align:center;color:var(--mute)}
+dialog{border:none;border-radius:16px;padding:22px;width:min(460px,94vw);box-shadow:0 20px 60px rgba(40,20,90,.25)}
+dialog.wide{width:min(760px,96vw);max-height:92vh}
+dialog::backdrop{background:rgba(27,27,51,.4)}
+dialog h3{margin:0 0 10px}
+.fl{display:block;font-size:13px;color:var(--mute);margin:8px 0}
+.fl input,.fl select,.fl textarea{width:100%;margin-top:4px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#fff}
+.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0 12px}
+.it{border:1px solid var(--line);border-radius:12px;padding:6px 12px;margin:8px 0}
+.foot{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}
+th{text-align:left;color:var(--mute);font-weight:600;padding:6px;border-bottom:1px solid var(--line)}td{padding:6px;border-bottom:1px solid var(--line);vertical-align:top}
+.note{color:var(--mute);font-size:12px;margin-top:16px;text-align:center}
+h2{font-size:18px;margin:18px 0 8px}
+@media(max-width:560px){h1{font-size:24px}.two{grid-template-columns:1fr}}
+@media print{.noprint,.tabs,dialog{display:none!important}body{background:#fff;padding:0}}
+.gnav{max-width:1180px;margin:0 auto 14px;display:flex;gap:8px;flex-wrap:wrap}
+.gnav a{padding:8px 16px;border-radius:99px;border:1px solid #e4e1f3;background:#fff;color:#1b1b33;font:600 14px "Plus Jakarta Sans",system-ui,sans-serif;text-decoration:none}
+.gnav a.on{background:#7c3aed;border-color:#7c3aed;color:#fff}
+@media print{.gnav{display:none}}
+</style>
+</head>
+<body>
+<nav class="gnav" aria-label="Navigasi dashboard"><a href="/" >Dashboard NPD</a><a href="/survey.html" class="on" aria-current="page">Survei Produk</a></nav>
+<div class="wrap" id="app"></div>
+<dialog id="dv"><form method="dialog" id="fv">
+  <h3 id="dvt">Tambah kunjungan</h3>
+  <label class="fl">Jenis<select id="vt"><option value="outlet">Outlet / speedshop</option><option value="mekanik">Mekanik / engine builder</option></select></label>
+  <label class="fl">Nama outlet / mekanik<input id="vn" required></label>
+  <label class="fl">Wilayah<select id="vw"></select></label>
+  <label class="fl">Tanggal kunjungan<input type="date" id="vd" required></label>
+  <div class="foot"><button class="btn" type="button" data-a="vcancel">Batal</button><button class="btn pri" type="submit">Simpan</button></div>
+</form></dialog>
+<dialog id="ds" class="wide"><div id="sb"></div></dialog>
+<datalist id="usp"><option>Harga lebih murah</option><option>Kualitas / awet</option><option>Stok selalu tersedia</option><option>Garansi</option><option>Presisi / sesuai standar</option><option>Kemasan</option><option>Performa lebih baik</option></datalist>
+<input type="file" id="file" accept=".json" hidden>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const PROD=["Lambda","Brake Pad","Gasket","Kampas Kopling","Piston","Conrod","Roller Matic","Brake Disc","TPS Sensor","Sprocket","Komstir"];
+const WIL=["Surabaya","Sidoarjo","Gresik","Mojokerto"];
+const START=new Date("2026-11-12T00:00:00"),END=new Date("2026-12-12T23:59:59");
+const KEY="survey-v1";
+let V=[];try{V=JSON.parse(localStorage.getItem(KEY))||[]}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(V))}catch(e){}};
+let wil="Semua",view="list",cur=null,editId=null;
+const rp=n=>"Rp "+Math.round(n).toLocaleString("id-ID");
+const fd=s=>s?new Date(s+"T00:00").toLocaleDateString("id-ID",{day:"numeric",month:"short"}):"-";
+const nowT=()=>{const d=new Date();return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0")};
+const pct=(a,b)=>b?Math.min(100,a/b*100):0;
+const bar=v=>`<div class="bar"><i style="width:${v}%"></i></div>`;
+const top=(arr,n)=>{const m={};arr.filter(x=>x&&String(x).trim()).forEach(x=>{const k=String(x).trim().toLowerCase();(m[k]=m[k]||{n:0,t:String(x).trim()}).n++});return Object.values(m).sort((a,b)=>b.n-a.n).slice(0,n).map(o=>`${esc(o.t)} (${o.n})`).join(", ")||"-"};
+const L=()=>V.filter(v=>wil==="Semua"||v.wilayah===wil).sort((a,b)=>(a.tgl||"").localeCompare(b.tgl||"")||a.id-b.id);
+
+function stat(p,list){
+ const o=[],m=[];list.forEach(v=>v.items.forEach(i=>{if(i.p===p)(v.tipe==="outlet"?o:m).push(i)}));
+ const h=o.map(i=>+i.harga).filter(x=>x>0);
+ return{no:o.length,nm:m.length,brand:top(o.map(i=>i.brand),2),hmin:h.length?Math.min(...h):0,hmax:h.length?Math.max(...h):0,havg:h.length?h.reduce((a,b)=>a+b)/h.length:0,
+  dem:o.reduce((s,i)=>s+(+i.ambil||0),0),usp:top(o.map(i=>i.usp),2),fungsi:top(m.map(i=>i.fungsi),2),eks:top(m.map(i=>i.ekspektasi),2),band:top(m.map(i=>i.pembanding),2)};
+}
+
+function render(){
+ const done=V.filter(v=>v.status==="Selesai"),dO=done.filter(v=>v.tipe==="outlet").length,dM=done.length-dO;
+ const T=new Date(),fr=Math.min(1,Math.max(0,(T-START)/(END-START))),exp=Math.round(45*fr),diff=done.length-exp;
+ const pace=T<START?["n","Survei dimulai 12 Nov 2026 dan berakhir 12 Des 2026"]:diff>=0?["ok",`Di depan atau sesuai ritme target (target hari ini ${exp} kunjungan, realisasi ${done.length})`]:["bad",`Tertinggal ${-diff} kunjungan dari ritme target (target hari ini ${exp}, realisasi ${done.length})`];
+ const tabs=["Semua",...WIL].map(w=>{const ls=V.filter(v=>w==="Semua"||v.wilayah===w),d=ls.filter(v=>v.status==="Selesai").length;
+  return `<button class="tab ${w===wil?"on":""}" data-w="${w}"><div class="r">${w}<span>${d}/${ls.length}</span></div>${bar(pct(d,ls.length))}<small>selesai / terjadwal</small></button>`}).join("");
+ $("app").innerHTML=`<header class="card"><div class="top"><div><div class="code">ST No. 087/ST/XI/2026</div><h1>SURVEI PRODUK R&amp;D</h1>
+ <div class="meta"><span>PIC <b>SPV RND</b></span><span>Periode <b>12 Nov - 12 Des 2026</b></span><span>Wilayah <b>${WIL.join(", ")}</b></span></div></div>
+ <div class="row-b noprint" style="margin:0"><button class="btn" data-a="exp">Ekspor</button><button class="btn" data-a="imp">Impor</button><button class="btn" data-a="demo">Data contoh</button></div></div>
+ <div class="big">${bar(pct(done.length,45))}<strong>${done.length}/45</strong></div>
+ <div class="two"><div><span>Outlet / speedshop <b>${dO}/40</b></span>${bar(pct(dO,40))}</div><div><span>Mekanik / engine builder <b>${dM}/5</b></span>${bar(pct(dM,5))}</div></div>
+ <div class="pace ${pace[0]}">${pace[1]}</div></header>
+ <nav class="tabs" aria-label="Wilayah">${tabs}</nav>
+ <div class="sw noprint"><button class="btn ${view==="list"?"on":""}" data-vw="list">Kunjungan</button><button class="btn ${view==="prod"?"on":""}" data-vw="prod">Hasil per produk</button><button class="btn ${view==="rep"?"on":""}" data-vw="rep">Laporan</button></div>`
+ +(view==="list"?vList():view==="prod"?vProd():vRep())
+ +`<p class="note noprint">Data tersimpan di browser ini. Gunakan Ekspor untuk cadangan.</p>`;
+}
+
+function vList(){
+ const ls=L();
+ const plan=V.filter(v=>v.status==="Rencana").sort((a,b)=>(a.tgl||"").localeCompare(b.tgl||""));
+ const body="Rencana kunjungan survei produk R&D (ST 087/ST/XI/2026):\n\n"+plan.map((v,i)=>`${i+1}. ${fd(v.tgl)} - ${v.nama} (${v.tipe==="outlet"?"Outlet":"Mekanik"}, ${v.wilayah})`).join("\n");
+ const mail=`mailto:mr.fuboru@gmail.com?subject=${encodeURIComponent("Rencana Kunjungan Survei Produk R&D")}&body=${encodeURIComponent(body)}`;
+ return `<div class="row-b noprint" style="margin:0 0 12px"><button class="btn pri" data-a="add">Tambah kunjungan</button><a class="btn" href="${mail}">Kirim rencana lewat email (${plan.length})</a></div>
+ <div class="grid">${ls.length?ls.map(v=>`<article class="card v" data-id="${v.id}">
+  <div class="vt"><div><b>${esc(v.nama)}</b><div class="sub">${v.tipe==="outlet"?"Outlet / speedshop":"Mekanik / engine builder"} · ${v.wilayah} · ${fd(v.tgl)}</div></div><span class="pill ${v.status}">${v.status}</span></div>
+  <div class="row-b"><select data-sf aria-label="Status">${["Rencana","Selesai","Batal"].map(s=>`<option ${s===v.status?"selected":""}>${s}</option>`).join("")}</select>
+   <label class="chk"><input type="checkbox" data-cf ${v.sfa?"checked":""}> Sudah input di Fuboru Apps</label></div>
+  <div class="row-b"><button class="btn" data-a="ci" ${v.ci?"disabled":""}>${v.ci?"Check-in "+v.ci:"Check-in"}</button><button class="btn" data-a="co" ${v.co?"disabled":""}>${v.co?"Check-out "+v.co:"Check-out"}</button></div>
+  <div class="row-b"><button class="btn pri" data-a="srv">Isi survei (${v.items.length} produk)</button><button class="btn" data-a="edit">Edit</button><button class="btn del" data-a="del">Hapus</button></div>
+ </article>`).join(""):`<div class="card empty" style="grid-column:1/-1">Belum ada kunjungan di wilayah ini. Klik Tambah kunjungan untuk membuat jadwal.</div>`}</div>`;
+}
+
+function vProd(){
+ const ls=L(),S=PROD.map(p=>[p,stat(p,ls)]),mx=Math.max(1,...S.map(x=>x[1].dem));
+ return `<div class="grid">${S.map(([p,s])=>`<article class="card p"><h3>${p}</h3>
+  ${bar(pct(s.dem,mx))}<div class="sub" style="margin-top:4px">Permintaan outlet: <b>${s.dem.toLocaleString("id-ID")} pcs/bulan</b></div>
+  <div class="kv"><span>Responden</span><div>${s.no} outlet, ${s.nm} mekanik</div>
+  <span>Kompetitor</span><div>${s.brand}</div>
+  <span>Harga kompetitor</span><div>${s.havg?`${rp(s.hmin)} - ${rp(s.hmax)} (rata-rata ${rp(s.havg)})`:"-"}</div>
+  <span>USP diharapkan</span><div>${s.usp}</div>
+  <span>Fungsi teknis</span><div>${s.fungsi}</div>
+  <span>Ekspektasi teknis</span><div>${s.eks}</div>
+  <span>Pembanding</span><div>${s.band}</div></div></article>`).join("")}</div>`;
+}
+
+function vRep(){
+ const ls=L(),done=ls.filter(v=>v.status==="Selesai");
+ return `<div class="row-b noprint" style="margin:0 0 12px"><button class="btn pri" data-a="print">Cetak / PDF</button></div>
+ <section class="card"><h2 style="margin-top:0">Laporan penyelesaian tugas</h2>
+ <p style="font-size:14px">Surat tugas 087/ST/XI/2026 tanggal 10 November 2026. Wilayah: <b>${wil}</b>. Kunjungan selesai: <b>${done.length}</b> dari ${ls.length} terjadwal (target total: 40 outlet dan 5 mekanik).</p>
+ <h2>Hasil per produk</h2><div class="tw"><table><tr><th>Produk</th><th>Responden</th><th>Kompetitor</th><th>Harga rata-rata</th><th>Permintaan/bln</th><th>USP</th></tr>
+ ${PROD.map(p=>{const s=stat(p,ls);return `<tr><td>${p}</td><td>${s.no} outlet, ${s.nm} mekanik</td><td>${s.brand}</td><td>${s.havg?rp(s.havg):"-"}</td><td>${s.dem.toLocaleString("id-ID")}</td><td>${s.usp}</td></tr>`}).join("")}</table></div>
+ <h2>Daftar kunjungan</h2><div class="tw"><table><tr><th>Tanggal</th><th>Nama</th><th>Jenis</th><th>Wilayah</th><th>Check-in / out</th><th>Status</th><th>Fuboru Apps</th></tr>
+ ${ls.map(v=>`<tr><td>${fd(v.tgl)}</td><td>${esc(v.nama)}</td><td>${v.tipe==="outlet"?"Outlet":"Mekanik"}</td><td>${v.wilayah}</td><td>${v.ci||"-"} / ${v.co||"-"}</td><td>${v.status}</td><td>${v.sfa?"Ya":"Belum"}</td></tr>`).join("")||`<tr><td colspan="7">Belum ada data.</td></tr>`}</table></div></section>`;
+}
+
+// ---- dialog kunjungan ----
+$("vw").innerHTML=WIL.map(w=>`<option>${w}</option>`).join("");
+function openV(id){editId=id||null;const v=id?V.find(x=>x.id===id):null;
+ $("dvt").textContent=v?"Edit kunjungan":"Tambah kunjungan";
+ $("vt").value=v?v.tipe:"outlet";$("vn").value=v?v.nama:"";$("vw").value=v?v.wilayah:(wil==="Semua"?WIL[0]:wil);
+ $("vd").value=v?v.tgl:new Date().toISOString().slice(0,10);$("dv").showModal()}
+$("fv").addEventListener("submit",()=>{
+ const d={tipe:$("vt").value,nama:$("vn").value.trim(),wilayah:$("vw").value,tgl:$("vd").value};
+ if(!d.nama)return;
+ if(editId)Object.assign(V.find(x=>x.id===editId),d);else V.push({id:Date.now(),status:"Rencana",ci:"",co:"",sfa:false,items:[],...d});
+ save();render()});
+
+// ---- dialog survei ----
+function itemHTML(v,it,i){
+ const sel=`<label class="fl">Produk<select data-k="p">${PROD.map(p=>`<option ${p===it.p?"selected":""}>${p}</option>`).join("")}</select></label>`;
+ const f=(l,k,t,x)=>`<label class="fl">${l}<input data-k="${k}" type="${t||"text"}" ${x||""} value="${esc(it[k])}"></label>`;
+ const fields=v.tipe==="outlet"?f("Brand / merk kompetitor","brand")+f("Rata-rata pengambilan per bulan (pcs)","ambil","number")+f("Harga kompetitor (Rp)","harga","number")+f("USP yang diharapkan","usp","text",'list="usp"')
+  :f("Fungsi teknis","fungsi")+f("Ekspektasi yang diharapkan (teknis)","ekspektasi")+f("Kompetitor pembanding","pembanding");
+ return `<div class="it" data-i="${i}"><div class="fg">${sel}${fields}</div><div class="row-b" style="margin:0 0 8px"><button type="button" class="btn del" data-a="sdel">Hapus produk</button></div></div>`;
+}
+function buildS(){const v=V.find(x=>x.id===cur);
+ $("sb").innerHTML=`<h3>Survei: ${esc(v.nama)}</h3><div class="sub">${v.tipe==="outlet"?"Outlet / speedshop":"Mekanik / engine builder"} · ${v.wilayah}. Satu blok untuk tiap produk yang ditanyakan.</div>
+ ${v.items.map((it,i)=>itemHTML(v,it,i)).join("")||'<div class="empty">Belum ada produk. Klik Tambah produk.</div>'}
+ <div class="foot"><button type="button" class="btn" data-a="sadd">Tambah produk</button><button type="button" class="btn pri" data-a="sclose">Selesai</button></div>`}
+$("sb").addEventListener("input",e=>{const t=e.target,k=t.dataset.k;if(!k)return;
+ V.find(x=>x.id===cur).items[+t.closest(".it").dataset.i][k]=t.value;save()});
+
+// ---- aksi ----
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-w],[data-vw],[data-a]");if(!b)return;const d=b.dataset,card=b.closest("[data-id]"),id=card?+card.dataset.id:null;
+ if(d.w){wil=d.w;render();return}
+ if(d.vw){view=d.vw;render();return}
+ const v=id?V.find(x=>x.id===id):null;
+ switch(d.a){
+  case"add":openV();break;
+  case"edit":openV(id);break;
+  case"vcancel":$("dv").close();break;
+  case"del":if(confirm(`Hapus kunjungan "${v.nama}"?`)){V=V.filter(x=>x.id!==id);save();render()}break;
+  case"ci":v.ci=nowT();save();render();break;
+  case"co":v.co=nowT();v.status="Selesai";save();render();break;
+  case"srv":cur=id;buildS();$("ds").showModal();break;
+  case"sadd":{const x=V.find(x=>x.id===cur);x.items.push({p:PROD[0]});save();buildS();break}
+  case"sdel":{const x=V.find(x=>x.id===cur);x.items.splice(+b.closest(".it").dataset.i,1);save();buildS();break}
+  case"sclose":$("ds").close();render();break;
+  case"print":print();break;
+  case"exp":{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(V,null,2)],{type:"application/json"}));a.download="survei-produk-rnd.json";a.click();URL.revokeObjectURL(a.href);break}
+  case"imp":$("file").click();break;
+  case"demo":if(!V.length||confirm("Data yang ada akan diganti data contoh. Lanjutkan?"))demo();break;
+ }});
+document.addEventListener("change",e=>{const c=e.target.closest("[data-id]");if(!c)return;const v=V.find(x=>x.id===+c.dataset.id);
+ if(e.target.matches("[data-sf]"))v.status=e.target.value;else if(e.target.matches("[data-cf]"))v.sfa=e.target.checked;else return;save();render()});
+$("ds").addEventListener("close",render);
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+ r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d))throw 0;V=d;save();render()}catch(_){alert("File tidak valid. Gunakan file hasil Ekspor.")}};r.readAsText(f);e.target.value=""};
+
+function demo(){
+ const d=n=>"2026-11-"+String(n).padStart(2,"0"),o=(p,brand,ambil,harga,usp)=>({p,brand,ambil,harga,usp}),m=(p,fungsi,ekspektasi,pembanding)=>({p,fungsi,ekspektasi,pembanding});
+ const base={ci:"09:10",co:"10:00",sfa:true,status:"Selesai"};let i=1;
+ V=[
+  {id:i++,tipe:"outlet",nama:"Sinar Motor Surabaya",wilayah:"Surabaya",tgl:d(12),...base,items:[o("Brake Pad","Nissin",40,45000,"Harga lebih murah"),o("Piston","Kitaco",6,650000,"Kualitas / awet")]},
+  {id:i++,tipe:"outlet",nama:"Jaya Abadi Speedshop",wilayah:"Surabaya",tgl:d(13),...base,items:[o("Brake Pad","Nissin",25,48000,"Stok selalu tersedia"),o("Gasket","Wartech",12,205000,"Presisi / sesuai standar")]},
+  {id:i++,tipe:"outlet",nama:"Anugerah Racing",wilayah:"Sidoarjo",tgl:d(14),...base,items:[o("Gasket","Wartech",8,210000,"Kualitas / awet"),o("Sprocket","SSS",15,150000,"Harga lebih murah")]},
+  {id:i++,tipe:"mekanik",nama:"Budi Engine Builder",wilayah:"Sidoarjo",tgl:d(15),...base,items:[m("Piston","Menaikkan kompresi","Tahan panas dan presisi","Kitaco"),m("Conrod","Menahan beban putaran tinggi","Tidak mudah bengkok","Takegawa")]},
+  {id:i++,tipe:"outlet",nama:"Mekar Speedshop",wilayah:"Gresik",tgl:d(17),ci:"",co:"",sfa:false,status:"Rencana",items:[]},
+  {id:i++,tipe:"outlet",nama:"Putra Motor",wilayah:"Mojokerto",tgl:d(18),ci:"",co:"",sfa:false,status:"Rencana",items:[]}
+ ];save();render()}
+
+render();
+</script>
+</body>
+</html>
